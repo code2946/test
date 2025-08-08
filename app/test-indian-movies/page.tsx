@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { getIndianMovies, getBollywoodMovies, getHindiMovies } from "@/lib/tmdb"
+import { getIndianMovies, getBollywoodMovies, getHindiMovies } from "@/lib/tmdb-supabase"
 
 export default function TestIndianMoviesPage() {
   const [movies, setMovies] = useState<any[]>([])

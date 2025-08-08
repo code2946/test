@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { supabase, type WatchlistItem } from '@/lib/supabase'
-import { type TMDBMovieDetails, getMovieDetails } from '@/lib/tmdb'
+import { type TMDBMovieDetails, getMovieDetails } from '@/lib/tmdb-supabase'
 
 interface WatchlistItemWithDetails extends WatchlistItem {
   movieDetails?: TMDBMovieDetails

@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { supabase, type WatchlistItem } from "@/lib/supabase"
 import { ArrowLeft, Trash2, Film, Calendar, Star } from "lucide-react"
-import { getMovieDetails, type TMDBMovieDetails } from "@/lib/tmdb"
+import { getMovieDetails, type TMDBMovieDetails } from "@/lib/tmdb-supabase"
 import { getYear } from "@/lib/date"
 
 interface WatchlistItemWithDetails extends WatchlistItem {

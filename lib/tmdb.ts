@@ -2,9 +2,9 @@ import { apiCache } from "./cache"
 
 const TMDB_BASE_URL = "https://api.themoviedb.org/3"
 const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
-const TMDB_ACCESS_TOKEN =
+const TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN || 
   "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNGRiZWYzOTRmOTAzNGMwM2ViNmM5M2E4ZjA0M2MwNSIsIm5iZiI6MTc1MjkzMTUwOS44MzMsInN1YiI6IjY4N2I5Y2I1ZGZmMDA4MWRhYzcyYzI1YiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RmEVeq7ssiU0LSkUj9ihGMySUeS3y3CbeKs_00BCsi4"
-const TMDB_API_KEY = "24dbef394f9034c03eb6c93a8f043c05"
+const TMDB_API_KEY = process.env.TMDB_API_KEY || "24dbef394f9034c03eb6c93a8f043c05"
 
 // Enhanced fetch with caching and error handling
 async function cachedFetch(url: string, cacheKey: string, cacheTTL = 600): Promise<any> {
@@ -148,15 +148,50 @@ const tmdbFetch = async (endpoint: string) => {
   } catch (error) {
     console.warn("TMDB API unavailable, using mock data:", error);
     
-    // Return mock data based on endpoint
+    // Always return mock data when API fails - ensure movies are always displayed
     if (endpoint.includes("/genre/movie/list")) {
       return { genres: mockGenres };
     } else if (endpoint.includes("/movie/popular") || endpoint.includes("/movie/top_rated") || endpoint.includes("/search/movie") || endpoint.includes("/discover/movie")) {
+      // Return extended mock data for better user experience
+      const extendedMockMovies = [
+        ...mockMovies,
+        {
+          id: 155,
+          title: "The Dark Knight",
+          overview: "Batman raises the stakes in his war on crime with the help of Lt. Jim Gordon and District Attorney Harvey Dent.",
+          release_date: "2008-07-18",
+          vote_average: 9.0,
+          poster_path: "/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+          backdrop_path: "/hqkIcbrOHL86UncnHIsHVcVmzue.jpg",
+          genre_ids: [28, 80, 18, 53]
+        },
+        {
+          id: 13,
+          title: "Forrest Gump",
+          overview: "The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate and other historical events unfold from the perspective of an Alabama man.",
+          release_date: "1994-06-23",
+          vote_average: 8.8,
+          poster_path: "/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",
+          backdrop_path: "/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg",
+          genre_ids: [35, 18, 10749]
+        },
+        {
+          id: 122,
+          title: "The Lord of the Rings: The Return of the King",
+          overview: "Aragorn is revealed as the heir to the ancient kings as he, Gandalf and the other members of the broken fellowship struggle to save Gondor.",
+          release_date: "2003-12-17",
+          vote_average: 8.9,
+          poster_path: "/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+          backdrop_path: "/2u7zbn8EudG6kLlBzUYqP8RyFU4.jpg",
+          genre_ids: [12, 18, 14]
+        }
+      ];
+      
       return { 
-        results: mockMovies,
+        results: extendedMockMovies,
         total_pages: 1,
         page: 1,
-        total_results: mockMovies.length
+        total_results: extendedMockMovies.length
       };
     } else if (endpoint.includes("/movie/")) {
       // For movie details, return the first mock movie with additional details
@@ -171,7 +206,13 @@ const tmdbFetch = async (endpoint: string) => {
       };
     }
     
-    return { results: [], total_pages: 0, page: 1, total_results: 0 };
+    // Fallback: return at least some movies so the UI isn't empty
+    return { 
+      results: mockMovies, 
+      total_pages: 1, 
+      page: 1, 
+      total_results: mockMovies.length 
+    };
   }
 }
 

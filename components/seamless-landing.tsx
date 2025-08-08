@@ -23,7 +23,7 @@ import {
   getImageUrl,
   type TMDBMovie,
   type TMDBGenre,
-} from "@/lib/tmdb"
+} from "@/lib/tmdb-supabase"
 import { getYear } from "@/lib/date"
 
 export default function SeamlessLanding() {

@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/sync-movies",
+      "schedule": "0 2 * * *"
+    }
+  ],
+  "functions": {
+    "app/api/sync-movies/route.ts": {
+      "maxDuration": 300
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

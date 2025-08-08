@@ -4,7 +4,10 @@
       "Bash(pnpm install:*)",
       "Bash(npm install)",
       "Bash(mv:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }

@@ -6,7 +6,7 @@ import { Star, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { OptimizedImage } from "@/components/optimized-image"
-import { getImageUrl, type TMDBMovie } from "@/lib/tmdb"
+import { getImageUrl, type TMDBMovie } from "@/lib/tmdb-supabase"
 import { getYear } from "@/lib/date"
 
 interface MovieCardProps {

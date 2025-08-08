@@ -5,7 +5,7 @@ import { Film } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import MovieCard from "@/components/movie-card"
-import type { TMDBMovie } from "@/lib/tmdb"
+import type { TMDBMovie } from "@/lib/tmdb-supabase"
 
 interface MovieGridProps {
   movies: TMDBMovie[]

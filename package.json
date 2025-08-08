@@ -1,12 +1,21 @@
 {
-  "name": "my-v0-project",
+  "name": "screenonfire",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "db:seed": "node scripts/seed-movies.js",
+    "db:sync": "curl -s http://localhost:3000/api/sync-movies | jq",
+    "db:sync-force": "curl -s http://localhost:3000/api/sync-movies?force=true | jq",
+    "db:sync-prod": "curl -s https://$VERCEL_URL/api/sync-movies | jq",
+    "db:schema": "echo 'Run scripts/create-movies-schema.sql in your Supabase SQL Editor'",
+    "postbuild": "echo 'Build completed successfully'",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@ai-sdk/xai": "^2.0.2",
@@ -27,7 +36,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.454.0",
-    "next": "14.2.16",
+    "next": "^14.2.31",
     "next-themes": "^0.4.4",
     "react": "^18",
     "react-dom": "^18",
@@ -38,8 +47,10 @@
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv": "^17.2.1",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }

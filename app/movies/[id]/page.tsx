@@ -32,7 +32,7 @@ import {
   formatRuntime,
   type TMDBMovieDetails,
   type TMDBMovie,
-} from "@/lib/tmdb"
+} from "@/lib/tmdb-supabase"
 import { AiReviewModal } from "@/components/ai-review-modal"
 import { DiscussionModal } from "@/components/discussion-modal"
 import { Bot } from "lucide-react" // Changed Star to Bot for AI review button
