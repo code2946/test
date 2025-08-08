@@ -328,8 +328,15 @@ export default function MovieRecommender() {
     }
   }
 
-  const getMovieGenres = (genreIds: number[]) => {
-    return genreIds.map((id) => genres.find((g) => g.id === id)?.name).filter(Boolean)
+  const getMovieGenres = (movie: TMDBMovie) => {
+    // Use genre_names if available (from database), otherwise fallback to genre_ids
+    if (movie.genre_names && movie.genre_names.length > 0) {
+      return movie.genre_names
+    }
+    if (movie.genre_ids && movie.genre_ids.length > 0) {
+      return movie.genre_ids.map((id) => genres.find((g) => g.id === id)?.name).filter(Boolean)
+    }
+    return []
   }
 
   const handlePageChange = (page: number) => {
@@ -625,7 +632,7 @@ export default function MovieRecommender() {
                       </div>
 
                       <div className="flex flex-wrap gap-2">
-                        {getMovieGenres(featuredMovie.genre_ids)
+                        {getMovieGenres(featuredMovie)
                           .slice(0, 3)
                           .map((genre) => (
                             <Badge key={genre} variant="outline" className="border-gray-600 text-gray-300">
