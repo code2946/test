@@ -32,31 +32,52 @@ export const OptimizedImage = memo(function OptimizedImage({
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   const loadImage = useCallback(async () => {
-    if (!src) return
+    if (!src || src === placeholder) return
 
     try {
+      setIsLoading(true)
+      setHasError(false)
+
       // Check if image is already cached
       const cachedImg = ultraFastImageLoader.getCachedImage(src)
       if (cachedImg) {
         setImageSrc(src)
         setIsLoading(false)
-        setHasError(false)
         onLoad?.()
         return
       }
 
-      // Load image through ultra-fast loader
+      // For TMDB images, try to load directly first
+      if (src.includes('image.tmdb.org')) {
+        const img = new Image()
+        img.onload = () => {
+          setImageSrc(src)
+          setIsLoading(false)
+          ultraFastImageLoader.preloadImages([src]) // Cache for next time
+          onLoad?.()
+        }
+        img.onerror = () => {
+          console.warn('TMDB image failed to load:', src)
+          setImageSrc('/placeholder.svg?height=750&width=500&text=Image+Not+Found')
+          setIsLoading(false)
+          setHasError(true)
+        }
+        img.src = src
+        return
+      }
+
+      // Fallback to ultra-fast loader for other images
       await ultraFastImageLoader.loadImage(src)
       setImageSrc(src)
       setIsLoading(false)
-      setHasError(false)
       onLoad?.()
     } catch (error) {
-      setImageSrc('/placeholder.svg?height=750&width=500&text=Error')
+      console.warn('Image loading error:', error, 'src:', src)
+      setImageSrc('/placeholder.svg?height=750&width=500&text=Failed+to+Load')
       setIsLoading(false)
       setHasError(true)
     }
-  }, [src, onLoad])
+  }, [src, onLoad, placeholder])
 
   useEffect(() => {
     if (shouldLoad) {

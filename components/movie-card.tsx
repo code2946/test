@@ -44,9 +44,13 @@ const MovieCard = memo(function MovieCard({
     >
       <div className="aspect-[2/3] relative overflow-hidden rounded-t-lg">
         <OptimizedImage
-          src={getImageUrl(movie.poster_path) || "/placeholder.svg"}
-          alt={movie.title}
-          className="w-full h-full group-hover:scale-105 transition-transform duration-300"
+          src={getImageUrl(movie.poster_path, 'w342')}
+          alt={`${movie.title} poster`}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          placeholder="/placeholder.svg?height=450&width=300&text=Movie+Poster"
+          width={300}
+          height={450}
+          priority={false}
         />
         <div className="absolute top-2 left-2">
           <div className="flex items-center gap-1 bg-black/80 rounded px-2 py-1">

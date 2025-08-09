@@ -151,20 +151,26 @@ export default function MovieDetailsPage() {
   const loadMovieData = async () => {
     try {
       setIsLoading(true)
-      const [movieData, creditsData, videosData, similarData, providersData] = await Promise.all([
-        getMovieDetails(Number(movieId)),
+      
+      // Load movie details first
+      const movieData = await getMovieDetails(Number(movieId))
+      setMovie(movieData)
+      
+      // Load other data in parallel with error handling for each
+      const [creditsData, videosData, similarData, providersData] = await Promise.allSettled([
         getMovieCredits(Number(movieId)),
         getMovieVideos(Number(movieId)),
         getSimilarMovies(Number(movieId)),
         getMovieWatchProviders(Number(movieId)),
       ])
 
-      setMovie(movieData)
-      setCast(creditsData.cast.slice(0, 20))
-      setCrew(creditsData.crew)
-      setVideos(videosData)
-      setSimilarMovies(similarData.results)
-      setWatchProviders(providersData)
+      // Set data with fallbacks
+      setCast(creditsData.status === 'fulfilled' ? creditsData.value.cast.slice(0, 20) : [])
+      setCrew(creditsData.status === 'fulfilled' ? creditsData.value.crew : [])
+      setVideos(videosData.status === 'fulfilled' ? videosData.value : [])
+      setSimilarMovies(similarData.status === 'fulfilled' ? similarData.value.results : [])
+      setWatchProviders(providersData.status === 'fulfilled' ? providersData.value : {})
+      
     } catch (error) {
       console.error("Error loading movie data:", error)
     } finally {

@@ -1,22 +1,7 @@
 "use client"
 
-import { lazy } from "react"
-
-// Lazy load heavy components for better initial load performance
-export const AuthModal = lazy(() => 
-  import("@/components/auth-modal").then(module => ({
-    default: module.AuthModal
-  }))
-)
-
-export const FloatingChatButton = lazy(() => 
-  import("@/components/floating-chat-button")
-)
-
-export const DiscussionModal = lazy(() => 
-  import("@/components/discussion-modal")
-)
-
-export const AIReviewModal = lazy(() => 
-  import("@/components/ai-review-modal")
-)
+// Direct exports to avoid webpack module loading issues
+export { AuthModal } from "@/components/auth-modal"
+export { FloatingChatButton } from "@/components/floating-chat-button"
+export { DiscussionModal } from "@/components/discussion-modal"
+export { AiReviewModal } from "@/components/ai-review-modal"

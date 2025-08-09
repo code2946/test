@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-import { AuthModal } from "@/components/auth-modal"
+import { AuthModal } from "@/components/lazy-components"
 import { supabase, type WatchlistItem } from "@/lib/supabase"
 import {
   getGenres,
@@ -23,6 +23,7 @@ import {
   getImageUrl,
   type TMDBMovie,
   type TMDBGenre,
+  checkDatabaseStatus,
 } from "@/lib/tmdb-supabase"
 import { getYear } from "@/lib/date"
 
@@ -43,6 +44,8 @@ export default function SeamlessLanding() {
   const [authUser, setAuthUser] = useState<any | null>(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [hasScrolledToMovies, setHasScrolledToMovies] = useState(false)
+  const [dbStatus, setDbStatus] = useState<any>(null)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   // Memoized watchlist lookup for O(1) performance
@@ -65,7 +68,30 @@ export default function SeamlessLanding() {
       }
     }
 
+    const loadInitialMovies = async () => {
+      try {
+        console.log("Loading initial movies...")
+        setError(null)
+        
+        // Check database status first
+        const status = await checkDatabaseStatus()
+        setDbStatus(status)
+        console.log("Database status:", status)
+        
+        if (!status.connected || !status.hasMovies) {
+          setError("Database connection failed or no movies found. Using mock data.")
+        }
+        
+        await loadPopularMovies()
+        console.log("Initial movies loaded successfully")
+      } catch (error) {
+        console.error("Error loading initial movies:", error)
+        setError(error instanceof Error ? error.message : "Failed to load movies")
+      }
+    }
+
     loadGenres()
+    loadInitialMovies()
   }, [])
 
   useEffect(() => {
@@ -123,12 +149,17 @@ export default function SeamlessLanding() {
   const loadPopularMovies = async (page = 1) => {
     setIsLoading(true)
     try {
+      console.log(`Loading popular movies, page ${page}...`)
       const data = await getPopularMovies(page)
+      console.log("Received movie data:", data)
       setMovies(data.results)
       setTotalPages(data.total_pages)
       setCurrentPage(page)
       setActiveTab("popular")
-      if (page === 1) setFeaturedMovie(data.results[0])
+      if (page === 1 && data.results.length > 0) {
+        setFeaturedMovie(data.results[0])
+        console.log("Featured movie set:", data.results[0].title)
+      }
     } catch (error) {
       console.error("Error loading popular movies:", error)
     } finally {
@@ -136,9 +167,9 @@ export default function SeamlessLanding() {
     }
   }
 
-  const handleExploreMovies = () => {
+  const handleExploreMovies = async () => {
     if (!hasScrolledToMovies) {
-      loadPopularMovies()
+      await loadPopularMovies()
       setHasScrolledToMovies(true)
     }
     document.getElementById('movies')?.scrollIntoView({ behavior: 'smooth' })
@@ -364,7 +395,7 @@ export default function SeamlessLanding() {
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             <Button 
               variant={activeTab === "popular" ? "default" : "ghost"} 
-              onClick={() => { loadPopularMovies(); setActiveTab("popular") }}
+              onClick={() => { loadPopularMovies(1); setActiveTab("popular") }}
               className={activeTab === "popular" ? "bg-yellow-500 text-black" : "text-gray-300 hover:text-white"}
             >
               Popular
@@ -384,6 +415,24 @@ export default function SeamlessLanding() {
               🇮🇳 Bollywood
             </Button>
           </div>
+
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-2 text-red-400">
+                <span className="font-medium">Connection Issue:</span>
+                <span className="text-sm">{error}</span>
+              </div>
+              {dbStatus && (
+                <div className="text-xs text-red-300 mt-2">
+                  DB Connected: {dbStatus.connected ? "✓" : "✗"} | 
+                  Has Movies: {dbStatus.hasMovies ? "✓" : "✗"} | 
+                  Has Genres: {dbStatus.hasGenres ? "✓" : "✗"}
+                  {dbStatus.error && <div>Error: {dbStatus.error}</div>}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Movies Grid */}
           {isLoading ? (
@@ -453,7 +502,7 @@ export default function SeamlessLanding() {
             <div className="text-center py-16">
               <Film className="h-16 w-16 text-gray-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-white mb-2">Ready to discover movies?</h3>
-              <Button onClick={loadPopularMovies} className="bg-yellow-500 text-black hover:bg-yellow-600">
+              <Button onClick={() => loadPopularMovies(1)} className="bg-yellow-500 text-black hover:bg-yellow-600">
                 Load Popular Movies
               </Button>
             </div>

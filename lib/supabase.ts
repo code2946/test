@@ -8,6 +8,78 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export type Database = {
   public: {
     Tables: {
+      movies: {
+        Row: {
+          id: number
+          title: string
+          overview: string
+          release_date: string
+          vote_average: number
+          poster_path: string | null
+          backdrop_path: string | null
+          popularity: number
+          original_language: string
+          runtime: number
+          category: string
+          created_at: string
+        }
+        Insert: {
+          id: number
+          title: string
+          overview: string
+          release_date: string
+          vote_average: number
+          poster_path?: string | null
+          backdrop_path?: string | null
+          popularity: number
+          original_language: string
+          runtime?: number
+          category?: string
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          title?: string
+          overview?: string
+          release_date?: string
+          vote_average?: number
+          poster_path?: string | null
+          backdrop_path?: string | null
+          popularity?: number
+          original_language?: string
+          runtime?: number
+          category?: string
+          created_at?: string
+        }
+      }
+      genres: {
+        Row: {
+          id: number
+          name: string
+        }
+        Insert: {
+          id: number
+          name: string
+        }
+        Update: {
+          id?: number
+          name?: string
+        }
+      }
+      movie_genres: {
+        Row: {
+          movie_id: number
+          genre_id: number
+        }
+        Insert: {
+          movie_id: number
+          genre_id: number
+        }
+        Update: {
+          movie_id?: number
+          genre_id?: number
+        }
+      }
       watchlist: {
         Row: {
           id: string
