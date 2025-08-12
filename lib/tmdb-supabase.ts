@@ -40,7 +40,7 @@ export interface MovieResponse {
 }
 
 
-// Use the original TMDB API instead of database
+// Use the new proxy-based TMDB client instead of direct API calls
 import { 
   getGenres as tmdbGetGenres,
   searchMovies as tmdbSearchMovies,
@@ -51,8 +51,9 @@ import {
   getBollywoodMovies as tmdbGetBollywoodMovies,
   getHindiMovies as tmdbGetHindiMovies,
   getMovieDetails as tmdbGetMovieDetails,
-  getMoviesByGenre as tmdbGetMoviesByGenre
-} from './tmdb'
+  getMoviesByGenre as tmdbGetMoviesByGenre,
+  getImageUrl as tmdbGetImageUrl
+} from './tmdb-client'
 
 
 // Get genres from TMDB API directly
@@ -112,23 +113,12 @@ export const getMoviesByGenre = async (
   return tmdbGetMoviesByGenre(genreId, page)
 }
 
-// Utility functions with improved error handling
+// Use the proxy-based image URL function
 export const getImageUrl = (
   path: string | null,
   size: "w200" | "w300" | "w342" | "w500" | "w780" | "original" = "w500",
 ): string => {
-  // Handle null or empty paths
-  if (!path || path.trim() === '') {
-    return "/placeholder.svg?height=750&width=500&text=No+Image"
-  }
-  
-  // Ensure path starts with '/' (TMDB paths should already have this)
-  const cleanPath = path.startsWith('/') ? path : `/${path}`
-  
-  // Construct the full TMDB image URL
-  const imageUrl = `https://image.tmdb.org/t/p/${size}${cleanPath}`
-  
-  return imageUrl
+  return tmdbGetImageUrl(path, size)
 }
 
 // Additional utility to validate image URLs
@@ -158,11 +148,11 @@ export const checkDatabaseStatus = async () => {
   }
 }
 
-// Re-export TMDB utility functions
+// Re-export TMDB utility functions from the new client
 export { 
   getMovieCredits, 
   getMovieVideos, 
   getSimilarMovies, 
   getMovieWatchProviders, 
   getMovieRecommendations 
-} from './tmdb'
+} from './tmdb-client'
