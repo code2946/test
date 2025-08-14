@@ -21,12 +21,21 @@ npm run lint         # Run Next.js linter
 # - scripts/create-discussions-schema.sql
 # - scripts/create-threads-table.sql
 # - scripts/create-movie-tables.sql
+# - scripts/create-recommendation-schema.sql
+
+# Recommendation System
+npm run rec:schema   # Instructions for recommendation schema setup
+npm run rec:ingest   # Enhance existing movies with cast/crew/keywords
+npm run rec:ingest-new # Ingest new popular/trending movies  
+npm run rec:vectors  # Compute feature vectors for recommendations
+npm run rec:status   # Check recommendation system status
 ```
 
 ## Application Routes
 
 - **/** - Seamless landing page with integrated movie discovery (single page experience)
 - **/discover** - Full movie discovery and browsing interface with advanced filters
+- **/recommendations** - Advanced content-based recommendation system with two-pane interface
 - **/watchlist** - User's personal movie watchlist (requires auth)
 - **/movies/[id]** - Individual movie details and discussions
 
@@ -82,10 +91,11 @@ GEMINI_API_KEY=your_gemini_api_key
 
 ### Key Features
 1. **Movie Discovery**: Search, filter by genre/rating/year, popular/top-rated lists
-2. **Personalized Watchlist**: User-specific movie collections with heart/like system
-3. **AI Chat**: Context-aware movie recommendations using user's viewing history
-4. **Discussion Forums**: Threaded discussions with reactions per movie
-5. **Regional Content**: Special focus on Indian/Bollywood cinema
+2. **Advanced Recommendations**: Content-based filtering with configurable weights for genre, cast, director, cinematography
+3. **Personalized Watchlist**: User-specific movie collections with heart/like system
+4. **AI Chat**: Context-aware movie recommendations using user's viewing history
+5. **Discussion Forums**: Threaded discussions with reactions per movie
+6. **Regional Content**: Special focus on Indian/Bollywood cinema
 
 ## Development Guidelines
 

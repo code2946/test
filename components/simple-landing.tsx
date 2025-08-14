@@ -91,6 +91,20 @@ export default function SimpleLanding() {
               </div>
               
               <nav className="flex items-center gap-6">
+                <Button
+                  variant="ghost"
+                  onClick={() => router.push("/recommendations")}
+                  className="text-gray-300 hover:text-yellow-400 hover:bg-yellow-400/10"
+                >
+                  Recommendations
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => router.push("/discover")}
+                  className="text-gray-300 hover:text-white"
+                >
+                  Discover
+                </Button>
                 {authUser ? (
                   <div className="flex items-center gap-4">
                     <Button
