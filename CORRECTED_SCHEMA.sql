@@ -1,5 +1,5 @@
--- ScreenOnFire Advanced Recommendation System Schema
--- Extends existing movies schema with content-based and hybrid recommendation capabilities
+-- ScreenOnFire Advanced Recommendation System Schema (CORRECTED)
+-- Fixes PostgreSQL reserved keyword issue with "cast" column
 
 -- Enhanced movies table to include additional fields for recommendation engine
 ALTER TABLE movies ADD COLUMN IF NOT EXISTS runtime INTEGER;
